@@ -3,6 +3,15 @@
 #include <string.h>
 
 using namespace std;
+void Board::show() {
+    for (int x = 0 ; x < 8 ; x++) {
+        for (int y = 0; y < 8 ; y++) {
+            cout << this->pieces[x][y];
+        }
+
+        cout << endl;
+    }
+}
 
 Board::Board(string pos) {
     int index_x = 0;
@@ -28,12 +37,15 @@ Board::Board(string pos) {
     }
 
     
-    for (int x = 0 ; x < 8 ; x++) {
-        for (int y = 0; y < 8 ; y++) {
-            cout << this->pieces[x][y];
-        }
+    this->show();
 
-        cout << endl;
-    }
+}
 
+void Board::move(char piece, int initial_row, int initial_column, int destination_row, int destination_column) {
+
+
+    this->pieces[destination_row][destination_column] = piece;
+    this->pieces[initial_row][initial_column] = 'X';
+
+    return;
 }

@@ -26,16 +26,51 @@ int main() {
     piece.setTexture(texture);
     piece.setScale(0.2f, 0.2f);
 
+    // This variable controls the mouse action when clicking the screen to move
+    bool is_moving = false;
+
+    // Mouse coordinates variables
+    int initial_row;
+    int initial_column;
+    int destination_row;
+    int destination_column;
+
+    char piece_to_move;
+
     while (window.isOpen()) {
         sf::Event e;
         while (window.pollEvent(e)) {
             if (e.type == sf::Event::Closed) {
                 window.close();
+            } else if (e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Left) {
+                // If mouse is clicked
+                sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
+
+                if (mouse_position.x >= 0 && mouse_position.y >= 0 && mouse_position.x <= 512 && mouse_position.y <= 512) {
+                    if (!is_moving) {
+                        initial_row = mouse_position.y / 64;
+                        initial_column = mouse_position.x / 64;
+                        piece_to_move = board.pieces[initial_row][initial_column];
+                
+                        // User can't move blank spaces
+                        piece_to_move != 'X' ? is_moving = true : is_moving = false;
+                    } else {
+                        destination_row = mouse_position.y / 64;
+                        destination_column = mouse_position.x / 64;
+
+                        board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                        is_moving = false;
+                }
+
+            }
+
             }
         }
 
         window.clear(sf::Color::Red);
-        
+
+
+       
         // Draw Board
         int cur_y = 0;
         int cur_x = 0;
