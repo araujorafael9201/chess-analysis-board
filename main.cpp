@@ -60,11 +60,25 @@ int main() {
 
                         board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
                         is_moving = false;
+                    }
+
+            }
+
+
+        } else if (e.type == sf::Event::MouseButtonReleased) {
+                sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
+                destination_row = mouse_position.y / 64;
+                destination_column = mouse_position.x / 64;
+                            
+                if (destination_row == initial_row && destination_column == initial_column) {
+                    continue;
+                } else {
+                    board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                    is_moving = false;
                 }
 
-            }
+        }
 
-            }
         }
 
         window.clear(sf::Color::Red);
