@@ -72,7 +72,11 @@ int main() {
                         destination_row = mouse_position.y / 64;
                         destination_column = mouse_position.x / 64;
 
-                        board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                        if (board.is_move_legal(initial_row, initial_column, destination_row, destination_column)) {
+                            board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                        }
+
+
                         is_moving = false;
                     }
 
@@ -94,7 +98,9 @@ int main() {
                     continue;
                 } else {
                     // If mouse is released in a diferent place, the piece moves there
-                    board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                    if (board.is_move_legal(initial_row, initial_column, destination_row, destination_column)) {
+                            board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                        }
                     is_moving = false;
                 }
 
