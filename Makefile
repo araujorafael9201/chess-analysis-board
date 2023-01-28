@@ -8,5 +8,5 @@ main: main.o board.o
 main.o: main.cpp
 	$(CC) -c main.cpp $(ARGS)
 
-board.o: board.cpp
+board.o: board.cpp board.h
 	$(CC) -c board.cpp

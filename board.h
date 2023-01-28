@@ -6,15 +6,17 @@
 
 using namespace std;
 
-class Board {
-    public:
-        Board(string pos);
-        void move(char piece, int initial_row, int initial_column, int destination_row, int destination_column);
-    
-        bool is_move_legal(int initial_row, int initial_column, int destination_row, int destination_column);
-        void show();
+class Board
+{
+public:
+    Board(string pos);
+    void move(char piece, int initial_row, int initial_column, int destination_row, int destination_column);
 
-        char pieces[8][8];
+    bool is_move_legal(int initial_row, int initial_column, int destination_row, int destination_column);
+    void show();
+
+    char pieces[8][8];
+    int white_to_move;
 };
 
 #endif

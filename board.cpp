@@ -21,6 +21,12 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
     char piece = this->pieces[initial_row][initial_column];
     bool legal;
 
+    if ((this->white_to_move == 1 && !isupper(piece)) || (this->white_to_move == -1 && isupper(piece)))
+    {
+        legal = false;
+        return legal;
+    }
+
     switch (piece)
     {
     // White Pieces
@@ -668,6 +674,8 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
 
 Board::Board(string pos)
 {
+    this->white_to_move = 1;
+
     int index_x = 0;
     int index_y = 0;
 
@@ -705,6 +713,8 @@ void Board::move(char piece, int initial_row, int initial_column, int destinatio
 
     this->pieces[destination_row][destination_column] = piece;
     this->pieces[initial_row][initial_column] = 'X';
+
+    this->white_to_move *= -1;
 
     this->show();
     return;
