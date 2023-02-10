@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <vector>
 #include "board.h"
 
 using namespace std;
@@ -46,6 +47,8 @@ int main()
 
     bool dragging;
 
+    vector<char> captured_pieces;
+
     while (window.isOpen())
     {
         sf::Event e;
@@ -81,7 +84,11 @@ int main()
 
                         if (board.is_move_legal(initial_row, initial_column, destination_row, destination_column))
                         {
-                            board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                            char piece_captured = board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                            if (piece_captured != 'X')
+                            {
+                                captured_pieces.push_back(piece_captured);
+                            }
                         }
 
                         is_moving = false;
@@ -109,7 +116,11 @@ int main()
                     // If mouse is released in a diferent place, the piece moves there
                     if (board.is_move_legal(initial_row, initial_column, destination_row, destination_column))
                     {
-                        board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                        char piece_captured = board.move(piece_to_move, initial_row, initial_column, destination_row, destination_column);
+                        if (piece_captured != 'X')
+                        {
+                            captured_pieces.push_back(piece_captured);
+                        }
                     }
                     is_moving = false;
                 }

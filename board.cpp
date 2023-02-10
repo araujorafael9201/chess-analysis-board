@@ -32,20 +32,34 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
     // White Pieces
     case 'P':
         legal = false;
-        if (initial_row == 6)
+        if (destination_column == initial_column)
         {
-            // Hasn't moved yet
-            if (destination_column == initial_column && destination_row == initial_row - 2)
+            if (destination_row == initial_row - 2 && initial_row == 6)
             {
                 if (this->pieces[initial_row - 1][initial_column] == 'X' && this->pieces[initial_row - 2][initial_column] == 'X')
                 {
                     legal = true;
                 }
             }
+            else if (destination_row == initial_row - 1)
+            {
+                if (this->pieces[initial_row - 1][initial_column] == 'X')
+                {
+                    legal = true;
+                }
+            }
         }
-        if (destination_column == initial_column && destination_row == initial_row - 1)
+        else if ((destination_column == initial_column + 1) && (destination_row == initial_row - 1))
         {
-            if (this->pieces[initial_row - 1][initial_column] == 'X')
+
+            if (this->pieces[initial_row - 1][initial_column + 1] != 'X' && !isupper(this->pieces[initial_row - 1][initial_column + 1]))
+            {
+                legal = true;
+            }
+        }
+        else if ((destination_column == initial_column - 1) && (destination_row == initial_row - 1))
+        {
+            if (this->pieces[initial_row - 1][initial_column - 1] != 'X' && !isupper(this->pieces[initial_row - 1][initial_column - 1]))
             {
                 legal = true;
             }
@@ -59,7 +73,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             if (destination_row > initial_row)
             {
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][destination_column] != 'X')
                     {
@@ -69,7 +83,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             }
             else if (destination_row < initial_row)
             {
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                 {
                     if (this->pieces[row_to_check][destination_column] != 'X')
                     {
@@ -82,7 +96,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             if (destination_column > initial_column)
             {
-                for (int column_to_check = initial_column + 1; column_to_check <= destination_column; column_to_check++)
+                for (int column_to_check = initial_column + 1; column_to_check < destination_column; column_to_check++)
                 {
                     if (this->pieces[destination_row][column_to_check] != 'X')
                     {
@@ -92,7 +106,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             }
             else if (destination_column < initial_column)
             {
-                for (int column_to_check = initial_column - 1; column_to_check >= destination_column; column_to_check--)
+                for (int column_to_check = initial_column - 1; column_to_check > destination_column; column_to_check--)
                 {
                     if (this->pieces[destination_row][column_to_check] != 'X')
                     {
@@ -106,15 +120,14 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             legal = false;
         }
 
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
+        {
+            legal = false;
+        }
         break;
 
     case 'N':
-        if (this->pieces[destination_row][destination_column] != 'X')
-        {
-            legal = false;
-            break;
-        }
-
         if ((destination_column == initial_column + 1 && destination_row == initial_row + 2) || (destination_column == initial_column - 1 && destination_row == initial_row + 2) || (destination_column == initial_column - 1 && destination_row == initial_row - 2) || (destination_column == initial_column + 1 && destination_row == initial_row - 2) || (destination_column == initial_column + 2 && destination_row == initial_row + 1) || (destination_column == initial_column - 2 && destination_row == initial_row + 1) || (destination_column == initial_column - 2 && destination_row == initial_row - 1) || (destination_column == initial_column + 2 && destination_row == initial_row - 1))
         {
             legal = true;
@@ -123,7 +136,11 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
+        {
+            legal = false;
+        }
         break;
 
     case 'B':
@@ -135,7 +152,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             if (destination_row > initial_row && destination_column > initial_column)
             {
                 int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -148,7 +165,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row > initial_row && destination_column < initial_column)
             {
                 int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -161,7 +178,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row < initial_row && destination_column > initial_column)
             {
                 int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -174,7 +191,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row < initial_row && destination_column < initial_column)
             {
                 int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -194,7 +211,11 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
+        {
+            legal = false;
+        }
         break;
 
     case 'Q':
@@ -204,7 +225,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             if (destination_row != initial_row)
                 if (destination_row > initial_row)
                 {
-                    for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                    for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                     {
                         if (this->pieces[row_to_check][destination_column] != 'X')
                         {
@@ -214,7 +235,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
                 }
                 else if (destination_row < initial_row)
                 {
-                    for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                    for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                     {
                         if (this->pieces[row_to_check][destination_column] != 'X')
                         {
@@ -227,7 +248,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             if (destination_column > initial_column)
             {
-                for (int column_to_check = initial_column + 1; column_to_check <= destination_column; column_to_check++)
+                for (int column_to_check = initial_column + 1; column_to_check < destination_column; column_to_check++)
                 {
                     if (this->pieces[destination_row][column_to_check] != 'X')
                     {
@@ -237,7 +258,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             }
             else if (destination_column < initial_column)
             {
-                for (int column_to_check = initial_column - 1; column_to_check >= destination_column; column_to_check--)
+                for (int column_to_check = initial_column - 1; column_to_check > destination_column; column_to_check--)
                 {
                     if (this->pieces[destination_row][column_to_check] != 'X')
                     {
@@ -252,7 +273,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             if (destination_row > initial_row && destination_column > initial_column)
             {
                 int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -265,7 +286,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row > initial_row && destination_column < initial_column)
             {
                 int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -278,7 +299,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row < initial_row && destination_column > initial_column)
             {
                 int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -306,13 +327,14 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-        break;
-    case 'K':
-        if (this->pieces[destination_row][destination_column] != 'X')
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
         {
             legal = false;
-            break;
         }
+        break;
+    case 'K':
+
         if (destination_column == initial_column)
         {
             if (destination_row - initial_row == 1 || destination_row - initial_row == -1)
@@ -346,31 +368,48 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
                 legal = false;
             }
         }
-
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
+        {
+            legal = false;
+        }
         break;
 
     // Black Pieces
     case 'p':
         legal = false;
-        if (initial_row == 1)
+        if (destination_column == initial_column)
         {
-            // Hasn't moved yet
-            if (destination_column == initial_column && destination_row == initial_row + 2)
+            if (destination_row == initial_row + 2 && initial_row == 1)
             {
                 if (this->pieces[initial_row + 1][initial_column] == 'X' && this->pieces[initial_row + 2][initial_column] == 'X')
                 {
                     legal = true;
                 }
             }
+            else if (destination_row == initial_row + 1)
+            {
+                if (this->pieces[initial_row + 1][initial_column] == 'X')
+                {
+                    legal = true;
+                }
+            }
         }
-        if (destination_column == initial_column && destination_row == initial_row + 1)
+        else if ((destination_column == initial_column + 1) && (destination_row == initial_row + 1))
         {
-            if (this->pieces[initial_row + 1][initial_column] == 'X')
+            if (this->pieces[initial_row + 1][initial_column + 1] != 'X' && isupper(this->pieces[initial_row + 1][initial_column + 1]))
             {
                 legal = true;
             }
         }
+        else if ((destination_column == initial_column - 1) && (destination_row == initial_row + 1))
 
+        {
+            if (this->pieces[initial_row + 1][initial_column - 1] != 'X' && isupper(this->pieces[initial_row + 1][initial_column - 1]))
+            {
+                legal = true;
+            }
+        }
         break;
 
     case 'r':
@@ -379,7 +418,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             if (destination_row > initial_row)
             {
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][destination_column] != 'X')
                     {
@@ -389,7 +428,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             }
             else if (destination_row < initial_row)
             {
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                 {
                     if (this->pieces[row_to_check][destination_column] != 'X')
                     {
@@ -402,7 +441,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             if (destination_column > initial_column)
             {
-                for (int column_to_check = initial_column + 1; column_to_check <= destination_column; column_to_check++)
+                for (int column_to_check = initial_column + 1; column_to_check < destination_column; column_to_check++)
                 {
                     if (this->pieces[destination_row][column_to_check] != 'X')
                     {
@@ -412,7 +451,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             }
             else if (destination_column < initial_column)
             {
-                for (int column_to_check = initial_column - 1; column_to_check >= destination_column; column_to_check--)
+                for (int column_to_check = initial_column - 1; column_to_check > destination_column; column_to_check--)
                 {
                     if (this->pieces[destination_row][column_to_check] != 'X')
                     {
@@ -425,15 +464,14 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
+        {
+            legal = false;
+        }
         break;
 
     case 'n':
-        if (this->pieces[destination_row][destination_column] != 'X')
-        {
-            legal = false;
-            break;
-        }
         if ((destination_column == initial_column + 1 && destination_row == initial_row + 2) || (destination_column == initial_column - 1 && destination_row == initial_row + 2) || (destination_column == initial_column - 1 && destination_row == initial_row - 2) || (destination_column == initial_column + 1 && destination_row == initial_row - 2) || (destination_column == initial_column + 2 && destination_row == initial_row + 1) || (destination_column == initial_column - 2 && destination_row == initial_row + 1) || (destination_column == initial_column - 2 && destination_row == initial_row - 1) || (destination_column == initial_column + 2 && destination_row == initial_row - 1))
         {
             legal = true;
@@ -442,7 +480,11 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
+        {
+            legal = false;
+        }
         break;
 
     case 'b':
@@ -454,7 +496,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             if (destination_row > initial_row && destination_column > initial_column)
             {
                 int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -467,7 +509,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row > initial_row && destination_column < initial_column)
             {
                 int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -480,7 +522,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row < initial_row && destination_column > initial_column)
             {
                 int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -493,7 +535,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row < initial_row && destination_column < initial_column)
             {
                 int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -513,8 +555,13 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
+        {
+            legal = false;
+        }
         break;
+
     case 'q':
         legal = true;
         if (destination_column == initial_column)
@@ -522,7 +569,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             if (destination_row != initial_row)
                 if (destination_row > initial_row)
                 {
-                    for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                    for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                     {
                         if (this->pieces[row_to_check][destination_column] != 'X')
                         {
@@ -532,7 +579,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
                 }
                 else if (destination_row < initial_row)
                 {
-                    for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                    for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                     {
                         if (this->pieces[row_to_check][destination_column] != 'X')
                         {
@@ -545,7 +592,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             if (destination_column > initial_column)
             {
-                for (int column_to_check = initial_column + 1; column_to_check <= destination_column; column_to_check++)
+                for (int column_to_check = initial_column + 1; column_to_check < destination_column; column_to_check++)
                 {
                     if (this->pieces[destination_row][column_to_check] != 'X')
                     {
@@ -555,7 +602,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             }
             else if (destination_column < initial_column)
             {
-                for (int column_to_check = initial_column - 1; column_to_check >= destination_column; column_to_check--)
+                for (int column_to_check = initial_column - 1; column_to_check > destination_column; column_to_check--)
                 {
                     if (this->pieces[destination_row][column_to_check] != 'X')
                     {
@@ -570,7 +617,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             if (destination_row > initial_row && destination_column > initial_column)
             {
                 int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -583,7 +630,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row > initial_row && destination_column < initial_column)
             {
                 int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row + 1; row_to_check <= destination_row; row_to_check++)
+                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -596,7 +643,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             else if (destination_row < initial_row && destination_column > initial_column)
             {
                 int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
+                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
                 {
                     if (this->pieces[row_to_check][column_to_check] != 'X')
                     {
@@ -624,14 +671,13 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-        break;
-
-    case 'k':
-        if (this->pieces[destination_row][destination_column] != 'X')
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
         {
             legal = false;
-            break;
         }
+        break;
+    case 'k':
         if (destination_column == initial_column)
         {
             if (destination_row - initial_row == 1 || destination_row - initial_row == -1)
@@ -665,7 +711,11 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
                 legal = false;
             }
         }
-
+        // Prevents piece from capturing another from the same color
+        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
+        {
+            legal = false;
+        }
         break;
     }
 
@@ -708,8 +758,13 @@ Board::Board(string pos)
     this->show();
 }
 
-void Board::move(char piece, int initial_row, int initial_column, int destination_row, int destination_column)
+char Board::move(char piece, int initial_row, int initial_column, int destination_row, int destination_column)
 {
+    char captured = 'X';
+    if (this->pieces[destination_row][destination_column] != 'X')
+    {
+        captured = this->pieces[destination_row][destination_column];
+    }
 
     this->pieces[destination_row][destination_column] = piece;
     this->pieces[initial_row][initial_column] = 'X';
@@ -717,5 +772,6 @@ void Board::move(char piece, int initial_row, int initial_column, int destinatio
     this->white_to_move *= -1;
 
     this->show();
-    return;
+
+    return captured;
 }
