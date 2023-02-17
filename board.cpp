@@ -21,15 +21,33 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
     char piece = this->pieces[initial_row][initial_column];
     bool legal;
 
+
+    
+    // Move is Ilegal if it's not your turn
     if ((this->white_to_move == 1 && !isupper(piece)) || (this->white_to_move == -1 && isupper(piece)))
+    {
+        legal = false;
+        return legal;
+    
+    }
+    
+    int is_capturing_white;
+    isupper(this->pieces[destination_row][destination_column]) ? is_capturing_white = 1 : is_capturing_white = -1;
+
+    // Prevents piece from capturing another from the same color
+    if (this->pieces[destination_row][destination_column] != 'X' && (white_to_move == is_capturing_white))
     {
         legal = false;
         return legal;
     }
 
+    // Pawns can only move forward so the black and white pawn have diferent codes
+    if (piece != 'p') {
+        piece = toupper(piece);
+    }
+
     switch (piece)
     {
-    // White Pieces
     case 'P':
         legal = false;
         if (destination_column == initial_column)
@@ -120,11 +138,6 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             legal = false;
         }
 
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
         break;
 
     case 'N':
@@ -136,12 +149,7 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
-        break;
+       break;
 
     case 'B':
         legal = true;
@@ -208,11 +216,6 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             }
         }
         else
-        {
-            legal = false;
-        }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
         {
             legal = false;
         }
@@ -327,11 +330,6 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
         {
             legal = false;
         }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
         break;
     case 'K':
 
@@ -368,14 +366,8 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
                 legal = false;
             }
         }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
         break;
 
-    // Black Pieces
     case 'p':
         legal = false;
         if (destination_column == initial_column)
@@ -411,315 +403,8 @@ bool Board::is_move_legal(int initial_row, int initial_column, int destination_r
             }
         }
         break;
-
-    case 'r':
-        legal = true;
-        if (destination_column == initial_column && destination_row != initial_row)
-        {
-            if (destination_row > initial_row)
-            {
-                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
-                {
-                    if (this->pieces[row_to_check][destination_column] != 'X')
-                    {
-                        legal = false;
-                    }
-                }
-            }
-            else if (destination_row < initial_row)
-            {
-                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
-                {
-                    if (this->pieces[row_to_check][destination_column] != 'X')
-                    {
-                        legal = false;
-                    }
-                }
-            }
-        }
-        else if (destination_row == initial_row && destination_column != initial_column)
-        {
-            if (destination_column > initial_column)
-            {
-                for (int column_to_check = initial_column + 1; column_to_check < destination_column; column_to_check++)
-                {
-                    if (this->pieces[destination_row][column_to_check] != 'X')
-                    {
-                        legal = false;
-                    }
-                }
-            }
-            else if (destination_column < initial_column)
-            {
-                for (int column_to_check = initial_column - 1; column_to_check > destination_column; column_to_check--)
-                {
-                    if (this->pieces[destination_row][column_to_check] != 'X')
-                    {
-                        legal = false;
-                    }
-                }
-            }
-        }
-        else
-        {
-            legal = false;
-        }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
-        break;
-
-    case 'n':
-        if ((destination_column == initial_column + 1 && destination_row == initial_row + 2) || (destination_column == initial_column - 1 && destination_row == initial_row + 2) || (destination_column == initial_column - 1 && destination_row == initial_row - 2) || (destination_column == initial_column + 1 && destination_row == initial_row - 2) || (destination_column == initial_column + 2 && destination_row == initial_row + 1) || (destination_column == initial_column - 2 && destination_row == initial_row + 1) || (destination_column == initial_column - 2 && destination_row == initial_row - 1) || (destination_column == initial_column + 2 && destination_row == initial_row - 1))
-        {
-            legal = true;
-        }
-        else
-        {
-            legal = false;
-        }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
-        break;
-
-    case 'b':
-        legal = true;
-        // Check if bishop is moving in a diagonal
-        if ((destination_row - initial_row) * (destination_row - initial_row) == (destination_column - initial_column) * (destination_column - initial_column))
-        {
-            // Check if there is a piece on the way
-            if (destination_row > initial_row && destination_column > initial_column)
-            {
-                int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
-                {
-                    if (this->pieces[row_to_check][column_to_check] != 'X')
-                    {
-                        legal = false;
-                        break;
-                    }
-                    column_to_check++;
-                }
-            }
-            else if (destination_row > initial_row && destination_column < initial_column)
-            {
-                int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
-                {
-                    if (this->pieces[row_to_check][column_to_check] != 'X')
-                    {
-                        legal = false;
-                        break;
-                    }
-                    column_to_check--;
-                }
-            }
-            else if (destination_row < initial_row && destination_column > initial_column)
-            {
-                int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
-                {
-                    if (this->pieces[row_to_check][column_to_check] != 'X')
-                    {
-                        legal = false;
-                        break;
-                    }
-                    column_to_check++;
-                }
-            }
-            else if (destination_row < initial_row && destination_column < initial_column)
-            {
-                int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
-                {
-                    if (this->pieces[row_to_check][column_to_check] != 'X')
-                    {
-                        legal = false;
-                        break;
-                    }
-                    column_to_check--;
-                }
-            }
-            else
-            {
-                legal = false;
-                break;
-            }
-        }
-        else
-        {
-            legal = false;
-        }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
-        break;
-
-    case 'q':
-        legal = true;
-        if (destination_column == initial_column)
-        {
-            if (destination_row != initial_row)
-                if (destination_row > initial_row)
-                {
-                    for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
-                    {
-                        if (this->pieces[row_to_check][destination_column] != 'X')
-                        {
-                            legal = false;
-                        }
-                    }
-                }
-                else if (destination_row < initial_row)
-                {
-                    for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
-                    {
-                        if (this->pieces[row_to_check][destination_column] != 'X')
-                        {
-                            legal = false;
-                        }
-                    }
-                }
-        }
-        else if (destination_row == initial_row)
-        {
-            if (destination_column > initial_column)
-            {
-                for (int column_to_check = initial_column + 1; column_to_check < destination_column; column_to_check++)
-                {
-                    if (this->pieces[destination_row][column_to_check] != 'X')
-                    {
-                        legal = false;
-                    }
-                }
-            }
-            else if (destination_column < initial_column)
-            {
-                for (int column_to_check = initial_column - 1; column_to_check > destination_column; column_to_check--)
-                {
-                    if (this->pieces[destination_row][column_to_check] != 'X')
-                    {
-                        legal = false;
-                    }
-                }
-            }
-        }
-        else if ((destination_row - initial_row) * (destination_row - initial_row) == (destination_column - initial_column) * (destination_column - initial_column))
-        {
-            // Check if there is a piece on the way
-            if (destination_row > initial_row && destination_column > initial_column)
-            {
-                int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
-                {
-                    if (this->pieces[row_to_check][column_to_check] != 'X')
-                    {
-                        legal = false;
-                        break;
-                    }
-                    column_to_check++;
-                }
-            }
-            else if (destination_row > initial_row && destination_column < initial_column)
-            {
-                int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row + 1; row_to_check < destination_row; row_to_check++)
-                {
-                    if (this->pieces[row_to_check][column_to_check] != 'X')
-                    {
-                        legal = false;
-                        break;
-                    }
-                    column_to_check--;
-                }
-            }
-            else if (destination_row < initial_row && destination_column > initial_column)
-            {
-                int column_to_check = initial_column + 1;
-                for (int row_to_check = initial_row - 1; row_to_check > destination_row; row_to_check--)
-                {
-                    if (this->pieces[row_to_check][column_to_check] != 'X')
-                    {
-                        legal = false;
-                        break;
-                    }
-                    column_to_check++;
-                }
-            }
-            else if (destination_row < initial_row && destination_column < initial_column)
-            {
-                int column_to_check = initial_column - 1;
-                for (int row_to_check = initial_row - 1; row_to_check >= destination_row; row_to_check--)
-                {
-                    if (this->pieces[row_to_check][column_to_check] != 'X')
-                    {
-                        legal = false;
-                        break;
-                    }
-                    column_to_check--;
-                }
-            }
-        }
-        else
-        {
-            legal = false;
-        }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
-        break;
-    case 'k':
-        if (destination_column == initial_column)
-        {
-            if (destination_row - initial_row == 1 || destination_row - initial_row == -1)
-            {
-                legal = true;
-            }
-            else
-            {
-                legal = false;
-            }
-        }
-        else if (destination_row == initial_row)
-        {
-            if (destination_column - initial_column == 1 || destination_column - initial_column == -1)
-            {
-                legal = true;
-            }
-            else
-            {
-                legal = false;
-            }
-        }
-        else
-        {
-            if ((destination_column - initial_column) * (destination_column - initial_column) == 1 && (destination_row - initial_row) * (destination_row - initial_row) == 1)
-            {
-                legal = true;
-            }
-            else
-            {
-                legal = false;
-            }
-        }
-        // Prevents piece from capturing another from the same color
-        if (this->pieces[destination_row][destination_column] != 'X' && !isupper(this->pieces[destination_row][destination_column]))
-        {
-            legal = false;
-        }
-        break;
     }
-
-    return legal;
+       return legal;
 }
 
 Board::Board(string pos)
